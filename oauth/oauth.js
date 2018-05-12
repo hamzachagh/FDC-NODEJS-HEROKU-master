@@ -7,9 +7,9 @@ var privateKey = '';
 var callbackURI = ''; //typically your URL + '/token';
 var callbackFile = 'views/index.html';
 
-var oauthPrefix = 'https://login.salesforce.com/services/oauth2/authorize'; //typically https://login.salesforce.com/services/oauth2/authorize
+var oauthPrefix = 'https://chaghdevorg-dev-ed.my.salesforce.com/services/oauth2/authorize'; //typically https://chaghdevorg-dev-ed.my.salesforce.com/services/oauth2/authorize
 var oauthURL = oauthPrefix + '?display=touch&response_type=code&client_id='+publicKey+'&redirect_uri='+callbackURI;
-var hostname = 'login.salesforce.com'; //typically login.salesforce.com
+var hostname = 'chaghdevorg-dev-ed.my.salesforce.com'; //typically chaghdevorg-dev-ed.my.salesforce.com
 
 
 var requestToken;
