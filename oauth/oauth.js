@@ -1,10 +1,10 @@
 var http = require('https');
 var fs = require('fs');
 
-var publicKey = '';
-var privateKey = '';
+var publicKey = '3MVG9Rd3qC6oMalXcM8hVxjOJvhYFvfY_wIr99DZ23Y_nlfVWpJsw1bRzL_eKt6E31PskZRiL5sgdbXsYA3s.';
+var privateKey = '8971956947311806869';
 
-var callbackURI = ''; //typically your URL + '/token';
+var callbackURI = 'https://www.getpostman.com/oauth2/callback'; //typically your URL + '/token';
 var callbackFile = 'views/index.html';
 
 var oauthPrefix = 'https://chaghdevorg-dev-ed.my.salesforce.com/services/oauth2/authorize'; //typically https://chaghdevorg-dev-ed.my.salesforce.com/services/oauth2/authorize
