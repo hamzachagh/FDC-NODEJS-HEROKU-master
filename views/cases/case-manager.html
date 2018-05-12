@@ -1,0 +1,147 @@
+<HTML>
+<HEAD>
+<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js" ></script>
+
+<script src="/js/spry/SpryData.js" language="javascript" type="text/javascript"></script>
+<script src="/js/spry/SpryJSONDataSet.js" language="javascript" type="text/javascript"></script>
+<script src="/js/spry/SpryNestedJSONDataSet.js"></script>
+
+<script>
+var accountSOQL = escape("SELECT ID, Name From Account LIMIT 99");
+var accounts = new Spry.Data.JSONDataSet('/query?q='+accountSOQL,{path:"records"});
+
+function init() {
+	accounts.loadData();
+	accounts.addObserver(endLoad)
+}
+
+function endLoad(notificationType, notifier, data)
+{
+	 if(notificationType == 'onPostLoad') {getCases(accounts.getData()[0].Name);}
+}
+
+var caseRecords = new Spry.Data.JSONDataSet(null,{useCache:false});
+var owners = new Spry.Data.NestedJSONDataSet(caseRecords,"Owner");
+
+function submitCase() {
+ var company = $('#company_name').val();
+ var type = $('#case_type').val();
+ url = '/execute/FieldCase/POST/{"companyName":"'+company+'","caseType":"'+type+'"}/?submit=true';
+ $.ajaxSetup({
+ 
+ 	async: true,
+ 	cache: false,
+ 	dataType: "json",
+ 	success: refresh,
+ 	error: showError,
+ 	url: url
+ 
+ 	});
+
+  $.ajax();
+
+}
+
+function deleteOldCases() {
+ var company = $('#company_name').val();
+ var type = $('#case_type').val();
+ url = '/execute/FieldCase/DELETE/?companyName='+escape(company);
+ 
+ $.ajaxSetup({
+ 
+ 	async: true,
+ 	cache: false,
+ 	dataType: "json",
+ 	success: refresh,
+ 	error: showError,
+ 	url: url
+ 
+ 	});
+
+  $.ajax();
+
+}
+
+function closeCase(caseId) {
+ var company = $('#company_name').val();
+ url = '/execute/FieldCase/PATCH/{"caseId":"'+caseId+'","caseStatus":"Closed","caseNote":"Case Closed"}';
+ 
+ $.ajaxSetup({
+ 
+ 	async: true,
+ 	cache: false,
+ 	dataType: "json",
+ 	success: refresh,
+ 	error: showError,
+ 	url: url
+ 
+ 	});
+
+  $.ajax();
+}
+
+function refresh(response) {
+	getCases();
+}
+
+
+function showError(error) {
+	alert(error[0].message);
+}
+	
+function showResults(result) {
+	getCases($('#company_name').val());
+}
+
+
+function getCases(company) {
+ if(company == null) {company = $('#company_name').val();}
+ var d = new Date();
+ url = '/execute/FieldCase/GET/?companyName='+escape(company);
+ caseRecords.setURL(url);
+ caseRecords.loadData();
+ 
+}
+
+
+$(document).ready(init());
+</script>
+</HEAD>
+
+<BODY>
+<!-- snip:html/header.html -->
+<div>
+<h1>Submit New Case</h1>
+<div spry:region="accounts">
+Company Name:
+<SELECT id="company_name" onchange="getCases()">
+	<OPTION spry:repeat="accounts">{Name}</OPTION>
+</SELECT>
+
+</div>
+Case Type:
+<SELECT id="case_type">
+	<OPTION SELECTED>Software</OPTION>
+	<OPTION>Hardware</OPTION>
+	<OPTION>Human Error</OPTION>
+</SELECT>
+<button onclick="submitCase()">Submit</button>
+</div>
+
+
+<div spry:region="caseRecords owners">
+<div spry:repeat="caseRecords">{caseRecords::Subject} ({caseRecords::Status}) [{owners::Name}] <BUTTON onClick="closeCase('{caseRecords::Id}')">CLOSE</BUTTON></div>
+
+<BUTTON onclick="deleteOldCases()">Delete Old Cases</BUTTON>
+</div>
+
+
+
+
+</BODY>
+
+
+
+
+</HTML>
