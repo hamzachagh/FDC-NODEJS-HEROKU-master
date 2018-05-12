@@ -180,8 +180,6 @@ function getRefreshToken(token, _res, callback) {
 		
 	}
 
-	console.log(oauthURL);
-
 module.exports = {
  oauthURL : oauthURL,
  getRequestToken : getRequestToken,
